@@ -1,12 +1,12 @@
 """model class for user
     """
 from django.db import models
-from django.contrib.auth.backends import BaseBackend
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here
 
 
-class UserModel(BaseBackend):
+class UserModel(AbstractUser):
     """created a class for user
 
     Args:
