@@ -3,6 +3,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+import user
 
 from user.serializers import Loginserializer
 from user.serializers import Regsitrationclass
@@ -28,9 +29,12 @@ class Login(APIView):
         serial = serializer_class(data=request.data)
         if serial.is_valid(raise_exception=True):
             print("valid data", serial.validated_data)
-            return Response(
-                data={"success": True, "data": request.data}, status=status.HTTP_200_OK
-            )
+
+        user_info = user.object.create()
+
+        return Response(
+            data={"success": True, "data": request.data}, status=status.HTTP_200_OK
+        )
 
 
 class Registeration(APIView):
