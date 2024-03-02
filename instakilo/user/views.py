@@ -2,7 +2,7 @@
     """
 
 
-from psycopg2 import IntegrityError
+from django.db import IntegrityError
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -31,6 +31,7 @@ class Login(APIView):
         print(request.data)
 
         serial = serializer_class(data=request.data)
+
         if serial.is_valid(raise_exception=True):
             print("valid data", serial.validated_data)
 
@@ -75,6 +76,9 @@ class Registeration(APIView):
 
             except IntegrityError:
                 return Response(
-                    data={"success": False, "message": "user already exists"},
+                    data={
+                        "success": False,
+                        "message": "username or email already exists",
+                    },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
