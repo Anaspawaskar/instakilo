@@ -2,6 +2,8 @@
     """
 
 
+from click import password_option
+from django.contrib.auth import authenticate
 from django.db import IntegrityError
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -11,33 +13,6 @@ from user.models import UserModel
 
 from user.serializers import LoginSerializer
 from user.serializers import RegsitrationSerializer
-
-
-class Login(APIView):
-    """this class id for the login page"""
-
-    def post(self, request):
-        """post function for the class login
-
-        Args:
-            request (_type_): _description_
-            format (_type_, optional): _description_. Defaults to None.
-
-        Returns:
-            _type_: _description_
-        """
-
-        serializer_class = LoginSerializer
-        print(request.data)
-
-        serial = serializer_class(data=request.data)
-
-        if serial.is_valid(raise_exception=True):
-            print("valid data", serial.validated_data)
-
-        return Response(
-            data={"success": True, "data": request.data}, status=status.HTTP_200_OK
-        )
 
 
 class Registeration(APIView):
@@ -82,3 +57,42 @@ class Registeration(APIView):
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
+
+
+class Login(APIView):
+    """this class id for the login page"""
+
+    def post(self, request):
+        """post function for the class login
+
+        Args:
+            request (_type_): _description_
+            format (_type_, optional): _description_. Defaults to None.
+
+        Returns:
+            _type_: _description_
+        """
+
+        serializer_class = LoginSerializer
+        print(request.data)
+
+        serial = serializer_class(data=request.data)
+
+        if serial.is_valid(raise_exception=True):
+            print("valid data", serial.validated_data)
+
+        try:
+            user = authenticate(request, username="username", password="password")
+            if user != "":
+                return Response(
+                    data={"success": True, "data": request.data},
+                    status=status.HTTP_200_OK,
+                )
+
+        except ValueError as verror:
+            return Response(
+                data={
+                    "success": False,
+                    "verror": "username and password odes not matched",
+                }
+            )
