@@ -22,7 +22,7 @@ class RegsitrationSerializer(serializers.Serializer):
         serializers (_type_): _description_
     """
 
-    mobile_number = serializers.IntegerField()
+    mobile_number = serializers.CharField()
     email_id = serializers.EmailField()
     first_name = serializers.CharField()
     last_name = serializers.CharField()

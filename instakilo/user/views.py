@@ -2,7 +2,6 @@
     """
 
 
-from click import password_option
 from django.contrib.auth import authenticate
 from django.db import IntegrityError
 from rest_framework.views import APIView
@@ -82,14 +81,26 @@ class Login(APIView):
             print("valid data", serial.validated_data)
 
         try:
-            user = authenticate(request, username="username", password="password")
-            if user != "":
+            user = authenticate(
+                username=serial.validated_data.get("username"),
+                password=serial.validated_data.get("password"),
+            )
+            print(user)
+            if user is not None:
                 return Response(
                     data={"success": True, "data": request.data},
                     status=status.HTTP_200_OK,
                 )
+            else:
+                return Response(
+                    data={
+                        "success": False,
+                        "message": "username and password does not match",
+                    },
+                    status=status.HTTP_200_OK,
+                )
 
-        except ValueError as verror:
+        except ValueError:
             return Response(
                 data={
                     "success": False,
