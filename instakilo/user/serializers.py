@@ -32,8 +32,6 @@ class RegsitrationSerializer(serializers.Serializer):
     def validate_user_name(self, value):
         """validation for username"""
 
-        if value == "":
-            raise serializers.ValidationError("user_name cannot be empty")
         if not any(character.isdigit() for character in value):
             raise serializers.ValidationError("usename must contain a number")
         if len(value) < 8:
