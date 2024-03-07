@@ -2,12 +2,14 @@
     """
 
 
+import os
 from django.contrib.auth import authenticate
 from django.db import IntegrityError
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from user.models import UserModel
+import jwt
 
 
 from user.serializers import LoginSerializer
@@ -38,6 +40,13 @@ class Registeration(APIView):
                 )
                 user_obj.set_password(serializer.validated_data.get("password"))
                 user_obj.save()
+
+                encoded_jwt = jwt.encode(
+                    {"username": serializer.validated_data.get("username")},
+                    "secret",
+                    algorithm=os.environ.get("DB_algorithm"),
+                )
+                print(encoded_jwt)
 
                 return Response(
                     data={
