@@ -29,24 +29,33 @@ class Registeration(APIView):
         serializer = serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
             print("valid data", serializer.validated_data)
+            try:
+                user_obj = UserModel.objects.create(
+                    username=serializer.validated_data.get("username"),
+                    first_name=serializer.validated_data.get("first_name"),
+                    last_name=serializer.validated_data.get("last_name"),
+                    email=serializer.validated_data.get("email_id"),
+                )
+                user_obj.set_password(serializer.validated_data.get("password"))
+                user_obj.save()
 
-            user_obj = UserModel.objects.create(
-                username=serializer.validated_data.get("username"),
-                first_name=serializer.validated_data.get("first_name"),
-                last_name=serializer.validated_data.get("last_name"),
-                email=serializer.validated_data.get("email_id"),
-            )
-            user_obj.set_password(serializer.validated_data.get("password"))
-            user_obj.save()
+                return Response(
+                    data={
+                        "success": True,
+                        "username": user_obj.username,
+                        "email": user_obj.email,
+                    },
+                    status=status.HTTP_200_OK,
+                )
 
-            return Response(
-                data={
-                    "success": True,
-                    "username": user_obj.username,
-                    "email": user_obj.email,
-                },
-                status=status.HTTP_200_OK,
-            )
+            except IntegrityError:
+                return Response(
+                    data={
+                        "success": False,
+                        "message": "username or email already exists",
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
 
 class Login(APIView):
