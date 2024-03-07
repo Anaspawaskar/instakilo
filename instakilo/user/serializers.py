@@ -3,7 +3,7 @@
 from rest_framework import serializers
 
 
-class Loginserializer(serializers.Serializer):
+class LoginSerializer(serializers.Serializer):
     """form for the login page
 
     Args:
@@ -11,40 +11,34 @@ class Loginserializer(serializers.Serializer):
     """
 
     username = serializers.CharField()
+    email = serializers.EmailField(required=False)
     password = serializers.CharField()
 
 
-class Regsitrationclass(serializers.Serializer):
+class RegsitrationSerializer(serializers.Serializer):
     """class for registration
 
     Args:
         serializers (_type_): _description_
     """
 
-    mobile_number = serializers.IntegerField()
+    mobile_number = serializers.CharField()
     email_id = serializers.EmailField()
-    full_name = serializers.CharField()
-    user_name = serializers.CharField(required=False)
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    username = serializers.CharField()
     password = serializers.CharField(min_length=8, max_length=20)
 
     def validate_user_name(self, value):
         """validation for username"""
 
-        if value == "":
-            raise serializers.ValidationError("user_name cannot be empty")
         if not any(character.isdigit() for character in value):
             raise serializers.ValidationError("usename must contain a number")
         if len(value) < 8:
             raise serializers.ValidationError("password must contain 8 characters")
 
-    def validate_full_name(self, value):
-        """validation for username"""
-
-        if value == "":
-            raise serializers.ValidationError("full name cannot be empty")
-
     def validation(self, value):
-        """validation for username"""
+        """validation for password"""
 
         if not any(character.isdigit() for character in value):
             raise serializers.ValidationError("passworrd must contain a number")
