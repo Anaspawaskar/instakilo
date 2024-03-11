@@ -41,13 +41,6 @@ class Registeration(APIView):
                 user_obj.set_password(serializer.validated_data.get("password"))
                 user_obj.save()
 
-                encoded_jwt = jwt.encode(
-                    {"username": serializer.validated_data.get("username")},
-                    "secret",
-                    algorithm=os.environ.get("DB_algorithm"),
-                )
-                print(encoded_jwt)
-
                 return Response(
                     data={
                         "success": True,
@@ -95,11 +88,20 @@ class Login(APIView):
                 password=serial.validated_data.get("password"),
             )
             print(user)
+
+            encoded_jwt = jwt.encode(
+                {"username": serial.validated_data.get("username")},
+                "secret",
+                algorithm=os.environ.get("DB_algorithm"),
+            )
+            print(encoded_jwt)
+
             if user is not None:
                 return Response(
                     data={"success": True, "data": request.data},
                     status=status.HTTP_200_OK,
                 )
+
             else:
                 return Response(
                     data={
