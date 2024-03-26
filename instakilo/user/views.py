@@ -89,16 +89,19 @@ class Login(APIView):
             )
             print(user)
 
+            key = "secret"
             encoded_jwt = jwt.encode(
                 {"username": serial.validated_data.get("username")},
                 "secret",
                 algorithm=os.environ.get("DB_algorithm"),
             )
-            print(encoded_jwt)
+
+            jwt.decode(encoded_jwt, key, algorithms=os.environ.get("DB_algorithm"))
+            {"username": serial.validated_data.get("username")}
 
             if user is not None:
                 return Response(
-                    data={"success": True, "data": request.data},
+                    data={"success": True, "data": request.data, "Token": encoded_jwt},
                     status=status.HTTP_200_OK,
                 )
 
